@@ -16,8 +16,8 @@ import java.util.List;
 //test :http://localhost:9090/mail={
 public class SparkApplication {
   private static final int SERVER_PORT = 4444;
-  //private static final String DOMAIN = "https://shifumixweb.appspot.com";
-  private static final String DOMAIN = "http://localhost:8080";
+  private static final String DOMAIN = "https://shifumixweb.appspot.com";
+  //private static final String DOMAIN = "http://localhost:8080";
   private static final String DIRECTORY = "/home/pi/workspace/Mails";
   public static final String API_ROOT = "/_ah/api/shifumix/v1";
 
@@ -39,7 +39,7 @@ public class SparkApplication {
 
   public static void main(String[] args) throws IOException {
     Spark.port(SERVER_PORT);
-    List<String> rc = listFilesForFolder(new File("C:\\Users\\Hervé\\Music"));
+    List<String> rc = listFilesForFolder(new File(args[1]));
     String computer=Main.getMyAddress()+":"+SERVER_PORT;
 
     List<LocalFile> lf=new ArrayList<>();
@@ -50,7 +50,7 @@ public class SparkApplication {
     final Gson gson = builder.create();
 
     String body=gson.toJson(new localFiles(lf));
-    String url=DOMAIN + API_ROOT + "/uploadfiles?user=hhoareau@gmail.com";
+    String url=DOMAIN + API_ROOT + "/uploadfiles?user="+args[0];
     Main.post(url,body);
 
     //Recherche de la musique
