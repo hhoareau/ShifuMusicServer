@@ -1,5 +1,13 @@
 package org.shelajev.webframeworks;
 
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import org.farng.mp3.MP3File;
+import org.farng.mp3.TagException;
+import org.farng.mp3.id3.ID3v1;
+import org.farng.mp3.id3.ID3v2_2;
+
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -16,16 +24,34 @@ public class LocalFile implements Serializable  {
     private String computer="";
     private String user="";
     private Boolean online=true;
+    private String path="";
 
     public LocalFile() {
     }
 
-    public LocalFile(String s,String computer) {
-        this.artist=s.split("-")[0];
-        if(s.indexOf("-")>-1)this.title=s.split("-")[1];
-        this.text=s;
+    public LocalFile(File f, String computer,String user) {
+        try {
+            ID3v1 tags = new MP3File(f).getID3v1Tag();
+            this.artist=tags.getLeadArtist();
+            this.title=tags.getTitle();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TagException e) {
+            e.printStackTrace();
+        }
+
+        if(this.title.length()==0 || this.getArtist().length()==0){
+            String s=f.getName().replace(".mp3","").replace(".ogg","").replace(".flac","").toLowerCase();
+            this.artist=s.split("-")[0].trim();
+            if(s.indexOf("-")>-1)this.title=s.split("-")[1].trim();
+        }
+
+        this.text= Base64.encode(f.getName().getBytes());
+        this.path=f.getAbsolutePath();
+
+        for(int i=0;i<10;i++)this.path=this.path.replace("/","_").replace("\\","_");
         this.computer=computer;
-        this.user=computer;
+        this.user=user;
         this.index=0;
     }
 
@@ -67,6 +93,14 @@ public class LocalFile implements Serializable  {
 
     public void setText(String text) {
         this.text= text;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public Integer getIndex() {

@@ -2,8 +2,10 @@ package org.shelajev.webframeworks;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.Inet4Address;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 
 
 public class Main {
@@ -13,6 +15,27 @@ public class Main {
         URL whatismyip = new URL("http://checkip.amazonaws.com");
         BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
         return in.readLine(); //you get the IP as a String
+    }
+
+
+    public static String getLocalAddress() throws IOException {
+        return Inet4Address.getLocalHost().getHostAddress();
+    }
+
+
+
+    public static void list_directory(String directoryName, ArrayList<File> files) {
+        File directory = new File(directoryName);
+
+        // get all the files from a directory
+        File[] fList = directory.listFiles();
+        for (File file : fList) {
+            if (file.isFile()) {
+                files.add(file);
+            } else if (file.isDirectory()) {
+                list_directory(file.getAbsolutePath(), files);
+            }
+        }
     }
 
     // convert InputStream to String
