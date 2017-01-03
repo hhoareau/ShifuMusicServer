@@ -1,25 +1,22 @@
 package org.shelajev.webframeworks;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.Inet4Address;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.util.ArrayList;
 
 
 public class Main {
     private static final String charset = "UTF-8";
 
-    public static String getMyAddress() throws IOException {
+    public static InetAddress getMyAddress() throws IOException {
         URL whatismyip = new URL("http://checkip.amazonaws.com");
         BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
-        return in.readLine(); //you get the IP as a String
+        return InetAddress.getByName(in.readLine()); //you get the IP as a String
     }
 
 
-    public static String getLocalAddress() throws IOException {
-        return Inet4Address.getLocalHost().getHostAddress();
+    public static InetAddress getLocalAddress() throws IOException {
+        return InetAddress.getLocalHost();
     }
 
 

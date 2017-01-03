@@ -32,8 +32,10 @@ public class LocalFile implements Serializable  {
     public LocalFile(File f, String computer,String user) {
         try {
             ID3v1 tags = new MP3File(f).getID3v1Tag();
-            this.artist=tags.getLeadArtist();
-            this.title=tags.getTitle();
+            if(tags!=null){
+                this.artist=tags.getLeadArtist();
+                this.title=tags.getTitle();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (TagException e) {
