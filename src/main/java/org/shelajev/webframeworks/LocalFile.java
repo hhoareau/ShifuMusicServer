@@ -25,6 +25,7 @@ public class LocalFile implements Serializable  {
     private String user="";
     private Boolean online=true;
     private String path="";
+    private String picture="";
 
     public LocalFile() {
     }
@@ -36,6 +37,8 @@ public class LocalFile implements Serializable  {
                 this.artist=tags.getLeadArtist();
                 this.title=tags.getTitle();
             }
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (TagException e) {
@@ -83,6 +86,14 @@ public class LocalFile implements Serializable  {
 
     public String getText() {
         return text;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     public Integer getOrigin() {

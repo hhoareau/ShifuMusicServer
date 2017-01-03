@@ -2,6 +2,8 @@ package org.shelajev.webframeworks;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.bitlet.weupnp.GatewayDevice;
 import org.bitlet.weupnp.GatewayDiscover;
 import org.bitlet.weupnp.PortMappingEntry;
@@ -15,6 +17,7 @@ import java.net.InetAddress;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 /**
@@ -53,7 +56,7 @@ public class SparkApplication {
 
     List<File> rc = new ArrayList<>();
     for(File d:directory)
-      if(d.getName().indexOf(".mp3")+d.getName().indexOf(".ogg")>-2)
+      if(d.getName().endsWith(".mp3") || d.getName().endsWith(".ogg"))
         rc.add(d);
 
     List<LocalFile> lf=new ArrayList<>();
@@ -61,6 +64,21 @@ public class SparkApplication {
       lf.add(new LocalFile(f,computer,user));
 
     return lf;
+  }
+
+
+  //https://api.discogs.com/database/search?artist=Nirvana&release_title=Smell+like+teen+spirit&key=kOwTlKAydAoLEnuMuXcN&secret=dFbewQxZmfOZNPSvqRUMeKRivQXpwQYH
+  public void getCovert(List<LocalFile> lf) throws IOException {
+    List<LocalFile> rc=new ArrayList<>();
+    for(LocalFile f:lf){
+      String query=f.getTitle()+"+"+f.getArtist();
+      String key="kOwTlKAydAoLEnuMuXcN";
+      String secret="dFbewQxZmfOZNPSvqRUMeKRivQXpwQYH";
+      for(int i=0;i<20;i++)query=query.replace(" ","+");
+      String result=Main.get("https://api.discogs.com/database/search?title="+query+"&key="+key+"&secret="+secret);
+      JsonObject obj=new Gson().fromJson(result,JsonObject.class);
+      f.setPicture(obj.getAsJsonArray("results").get(0).getAsJsonObject().get("thumb").getAsString());
+    }
   }
 
   public static Boolean openPort(int port,InetAddress localAddr) throws ParserConfigurationException, SAXException, IOException, InterruptedException {
